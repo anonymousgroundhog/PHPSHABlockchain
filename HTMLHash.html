@@ -1,0 +1,33 @@
+<html>
+<body>
+
+    <h1><u>Hash Program</u></h1>
+    <font size="3">
+        <p><table border="1">
+       <tr><td> This application illustrates how digital currency mining is done using hashing as proof of work. You enter in the text to be hashed, the number of leading zeros and click on the hashing algorithm desired. 
+        <br>The program will find the hash by adding a nonce, or random number, to the string until it generates a hash with the appropriate number of leading zeros. 
+        <br>There is there is a limit of 30 cpu seconds for the computation, so stick to 5 or less leading zeros. </tr></td>
+        </table>
+        <br><b>Sean Sanders, github link is: </b> <a href="https://github.com/seansanders/PHPSHABlockchain.git">GitHub URL Link</a>
+        </p>
+    </font>
+    <font size="6">
+    <p>Please enter in a sentence and select the hash you want to use</p>
+    
+    <form action="HTMLHash.php" method="post">
+    Enter in Sentence: <!--<input type="text" name="Sentence">--> <textarea id="Sentence" name = "Sentence" rows="4" cols="50"></textarea><br>
+    Enter in Number of Zeros to Check For: <input type="text" name="ZerosChoice"><br>
+    Select a Hash: SHA-256<select name="SHA">
+    <option value="SHA-224">SHA-224</option>
+    <option value="SHA-256">SHA-256</option>
+    <option value="SHA-512">SHA-512</option
+    </select>
+    
+    <br><br>
+    
+    <input type="submit">
+    </form>
+    </font>
+</body>
+<title>SHA HASH PROGRAM</title>
+</html>
