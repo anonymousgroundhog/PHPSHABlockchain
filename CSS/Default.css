@@ -1,0 +1,32 @@
+h1 {
+font-family: "Raleway", sans-serif;
+font-size: 30px;
+color: white;
+
+}
+
+body{
+    color: white;
+    font-family: "Raleway", sans-serif;
+    font-size: 20px;
+    background-color: black; 
+    
+}
+div {
+    height: 200px;
+    width: 50%;
+    
+    
+}
+hr{
+    color: white;
+    size: 10;
+    color: white;
+}
+#Intro{
+    background-image: url("../Images/background.jpg");
+    background-position: center;
+    background-size: 70%;
+    width: 100%;
+    background-color: black;  
+}

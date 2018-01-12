@@ -1,25 +1,18 @@
 ﻿<html>
 <head>
-<style>
-h1 {
-    font-size: 80%;
+<link rel="stylesheet" href="CSS/Default.css">
+<script>
+function goBack() {
+    window.history.back()
 }
-
-h2 {
-    font-size: 80%;
-}
-
-p {
-    font-size: 100%;
-}
-</style>
+</script>
 </head>
 
 <body>
-    <h1><u>Results HASH Page</u></h1>
+    <h1><u><font size="5">Results HASH Page</font></u></h1>
     <?php 
     //ini_set('max_execution_time', 300);
-    SetRunningTime(300); //SETS Running Time Here
+    SetRunningTime(30); //SETS Running Time Here
     $HashAlg = $_POST['SHA'];
     $CheckedHashAlg = str_replace("-", "", strtolower($HashAlg));
     $Sentence = htmlspecialchars($_POST['Sentence']);//$_POST["Sentence"];
@@ -32,18 +25,20 @@ p {
     //MAY NOT USE BELOW CODE Str_HashToIntegerValue due to issues of not needing a integer value to check
     // Simply keep function for future use
     function PrintIntroHash($Sentence, $Nonce, $HashValue, $HashAlg, $NumZeroAccountFor){
-        echo ("<h2 style='color:blue;'><b>Your Sentence is </b> " .$Sentence . "</h2>");
-        echo ("<h2 style='color:blue;'><br><b>Your sentence length is: </b>" . strlen($Sentence) . "</h2>");
-        echo ("<h2 style='color:blue;'><br><b>Zeros to account for is: </b>" . $NumZeroAccountFor . "</h2>");
-        echo ("<h2 style='color:blue;'><br><b>Nonce value is: </b>" . $Nonce . "</h2>");
-        echo ("<h2 style='color:blue;'> <br><b> The hash of the sentence without Nonce is: </b>" . $HashValue . "</h2>");
-        echo ("<h2 style='color:blue;'><br><b>You picked </b><u>" . $HashAlg . " </u><b>for the hash algorithm</b>" . "</h2>");
+        $NonceDisplay = number_format($Nonce);
+        echo ("<h2 style='color:yellow;'><b><font size='5'>Your Sentence is </b> " .$Sentence . "</h2>");
+        echo ("<h2 style='color:yellow;'><br><b>Your sentence length is: </b>" . strlen($Sentence) . "</h2>");
+        echo ("<h2 style='color:yellow;'><br><b>Zeros to account for is: </b>" . $NumZeroAccountFor . "</h2>");
+        echo ("<h2 style='color:yellow;'><br><b>Nonce value is: </b>" .$NonceDisplay . "</h2>");
+        echo ("<h2 style='color:yellow;'> <br><b> The initial hash of the sentence without Nonce is: </b>" . $HashValue . "</h2>");
+        echo ("<h2 style='color:yellow;'><br><b>You picked </b><u>" . $HashAlg . " </u><b>for the hash algorithm</b>" . "</h2></font>");
     }
     function PrintNewHash($Sentence, $CheckedHashAlg, $HashValue, $HashAlg, $Nonce, $TargetValue, $TargetValueAsInteger){
         $SentenceAndNonce = $_POST["Sentence"] . $Nonce;
-        $HashValue = hash($CheckedHashAlg, $SentenceAndNonce);       
-        echo "<h2><br><b>Hash Value with Nonce is:</b> " . $HashValue . "</h2>";        
-        echo "<h2><br><b>Nonce is:</b> " . $Nonce . "</h2>";
+        $HashValue = hash($CheckedHashAlg, $SentenceAndNonce);
+        $NonceDisplay = number_format($Nonce);
+        echo "<h2><br><b><font size='5'>Initial Hash Value with Nonce is:</b> " . $HashValue . "</h2></font>";        
+        echo "<h2><br><b><font size='5'>Nonce value is:</b> " . $NonceDisplay . "</h2></font>";
         return $HashValue;
     }
 
@@ -125,16 +120,27 @@ p {
     
    
     $ExecutionEndTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+     $ExecutionStartTime = round($ExecutionStartTime, 3);
+    $ExecutionEndTime = round($ExecutionEndTime, 3);
     $CalcTime = $ExecutionEndTime - $ExecutionStartTime;
     
     //END RUNNING TIME HERE
     $NumAttempts = $Nonce - $PrevNonce;
+    $NumAttemptsDisplay = number_format($NumAttempts, 0);
+     
     $HashRate = $NumAttempts / $CalcTime;
+   
+    /* 
+    $HashRate = number_format($HashRate, 3); */
+    /* $Nonce = number_format($Nonce, 0); */
     //$HashRate = int($HashRate);
-    echo ("<h3 style='color:red;'><br><b><u>Final Results Are</u>:</b></h3>");
+    $HashRate = number_format($HashRate, 3);
+    $NonceDisplay = number_format($Nonce);
+    echo("<hr size='10' color='white' ></hr>");
+    echo ("<h3 style='color:red;'><br><b><u>Results</u>:</b></h3>");
     echo ("<h3 style='color:red;'><br><b>Hash Values for last occurence is:</b> $HashValue </h3>");
-    echo ("<h3 style='color:red;'><br><b>Nonce value is:</b> $Nonce </h3>");
-    echo ("<h3 style='color:red;'><br><b>Total Number of attempts is:</b> $NumAttempts </h3>");
+    echo ("<h3 style='color:red;'><br><b>Nonce value is:</b> $NonceDisplay </h3>");
+    echo ("<h3 style='color:red;'><br><b>Total Number of attempts is:</b> $NumAttemptsDisplay </h3>");
     echo ("<h3 style='color:red;'><br><b>Start Time is:</b> $ExecutionStartTime Seconds</h3>");
     echo ("<h3 style='color:red;'><br><b>End Time is:</b> $ExecutionEndTime Seconds</h3>");
     echo ("<h3 style='color:red;'><br><b>Calculated Time Taken is:</b> $CalcTime Seconds</h3>");
@@ -144,7 +150,7 @@ p {
     
 
     <font size="6">
-        <br><br><a href="HTMLHash.html">Go Back</a>
+        <br><br><button onclick="goBack()">Go Back</button>
     </font>
 </body>
 <title>SHA HASH PROGRAM</title>
