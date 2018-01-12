@@ -136,15 +136,18 @@ function goBack() {
     //$HashRate = int($HashRate);
     $HashRate = number_format($HashRate, 3);
     $NonceDisplay = number_format($Nonce);
+    $NumZeroAccountForDisplay = number_format(pow(16,$NumZeroAccountFor), 0);
     echo("<hr size='10' color='white' ></hr>");
     echo ("<h3 style='color:red;'><br><b><u>Results</u>:</b></h3>");
     echo ("<h3 style='color:red;'><br><b>Hash Values for last occurence is:</b> $HashValue </h3>");
     echo ("<h3 style='color:red;'><br><b>Nonce value is:</b> $NonceDisplay </h3>");
     echo ("<h3 style='color:red;'><br><b>Total Number of attempts is:</b> $NumAttemptsDisplay </h3>");
+    echo("<h3 style='color:red;'><br><b>The Expected number of attempts is:</b> $NumZeroAccountForDisplay </h3>");
     echo ("<h3 style='color:red;'><br><b>Start Time is:</b> $ExecutionStartTime Seconds</h3>");
     echo ("<h3 style='color:red;'><br><b>End Time is:</b> $ExecutionEndTime Seconds</h3>");
     echo ("<h3 style='color:red;'><br><b>Calculated Time Taken is:</b> $CalcTime Seconds</h3>");
     echo ("<h3 style='color:red;'><br><b>The Hash Rate is:</b> $HashRate </h3>");
+    
     $ZeroToCheckFor;
     ?>
     
