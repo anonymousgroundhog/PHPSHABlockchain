@@ -31,122 +31,93 @@
      Receiver: <textarea id="ReceiverAddr" name = "ReceiverAddr" rows="1" cols="10" title="Enter in a Receiver Name." ><?php if(isset($_POST['ReceiverAddr'])) { 
          echo htmlentities ($_POST['ReceiverAddr']); }?></textarea><br>     
     Nonce: <textarea id="Nonce" name = "Nonce" rows="1" cols="3" title="Enter in a nonce value here to calculate the hash."><?php if(isset($_POST['Nonce'])) { 
-         echo htmlentities ($_POST['Nonce']); }?></textarea><br>    
-    
-    </select>
-    
-    <br>  
-   
+         echo htmlentities ($_POST['Nonce']); }?></textarea><br>        
+    </select>    
+    <br>     
     <br><input type="submit">  
-    </form>  
-   
-   
+    </form>   
     <?php 
-        session_start(); //KEEP FOR SESSION
-        session_set_cookie_params(3600,"/"); //KEEP FOR 1 hour  
-        $Amount = htmlspecialchars($_POST['Amount']);
-        $Nonce = htmlspecialchars($_POST['Nonce']);
-        $SenderAddr = htmlspecialchars($_POST['SenderAddr']);
-        $ReceiverAddr = htmlspecialchars($_POST['ReceiverAddr']);    
+        session_start();            
         $FileName = htmlspecialchars($_POST['FileName']);      
-        $html = '<div id="Block"><h1>Blockchain Data: </h1></div>';    
-        echo ($html);
-        echo('<br />');    
-        if ($FileName != "" && $Amount != "" && $Nonce != "" && $SenderAddr != "" && $ReceiverAddr != ""){  
-            $stringFileName = (string) $FileName;
-            WriteToFile($stringFileName);
-            $FileToOpen = $FileName.".txt";
-            $lines=readfileToArray($FileToOpen); //ARRAY KEEP TRACK OF LINES
-            //    echo "<font size='3' color='red'>Lines are: " . var_dump($lines) . "</font> <br />"; 
-            printTransactions($lines, $stringFileName);           
+        $html = '<div id="Block"><h1>Blockchain Data: </h1></div><br />';    
+        echo ($html);          
+        if (strLen(GetInputData())>=5){  
+            WriteToFile($FileName);
+            $FileLinesArray=readfileToArray($FileName.".txt"); 
+            printTransactions($FileLinesArray, $FileName);           
         } 
-
     
-        //USER DEFINED FUNCTION
+        //USER DEFINED FUNCTIONS
+        function GetInputData(){
+            $Amount = htmlspecialchars($_POST['Amount']);
+            $Nonce = htmlspecialchars($_POST['Nonce']);
+            $SenderAddr = htmlspecialchars($_POST['SenderAddr']);
+            $ReceiverAddr = htmlspecialchars($_POST['ReceiverAddr']);
+            
+            $DataToReturn = $SenderAddr . " " . $Amount . " " . $ReceiverAddr . " "  . $Nonce;
 
-        function PrintNewHash($Amount, $Nonce, $SenderAddr, $ReceiverAddr, $HashAlg){
-            $SentenceAndNonce = $_POST["SenderAddr"] . " " . $_POST["Amount"] . " " . $_POST["ReceiverAddr"] . " " .  $_POST["Nonce"];
-            $HashValue = hash($HashAlg, $SentenceAndNonce);
-        $arraySentenceData[]= '$StringSentenceAndNonce';
+            return $DataToReturn;
+        }
+
+        function GetNewHash($DataToHash, $HashAlg){
+            $HashValue = hash($HashAlg, $DataToHash);
             return $HashValue;
         }
 
-
-        function WriteToFile($FileToOpen2){
-                // echo "<font color='yellow'>FileName in Function is " . $FileToOpen2 . "</font><br />";
-                $Amount = htmlspecialchars($_POST['Amount']);//$_POST["Sentence"];
-                $Nonce = htmlspecialchars($_POST['Nonce']);
-                $SenderAddr = htmlspecialchars($_POST['SenderAddr']);
-                $ReceiverAddr = htmlspecialchars($_POST['ReceiverAddr']);    
-                $FileName = htmlspecialchars($_POST['FileName']);
-                $FileToOpen = $FileToOpen2.".txt";       
-                $myfile = fopen($FileToOpen, 'a') or die("Unable to open file!");        
-                $stringFileName = (string) $FileName;
-                //WRITE REGULAR DATA
-                $Date = date("Y/m/d");
-                $Time = date("h:i:sa");
+        function WriteToFile($FileToOpen2){    
+                $DateAndTime = date("Y/m/d"). "@" . date("h:i:sa");
                 $ArrayHashAlg = array("sha256");
-                $ArrayLength = count($ArrayHashAlg);
-                for($i = 0; $i < $ArrayLength; ++$i) {
-                    $HashFinalValue = PrintnewHash($Amount, $Nonce, $SenderAddr, $ReceiverAddr, $ArrayHashAlg[$i]);      
+                $ArrayLengthHashAlg = count($ArrayHashAlg);
+                for($i = 0; $i < $ArrayLengthHashAlg; ++$i) {
+                    $HashFinalValue = GetNewHash(GetInputData(), $ArrayHashAlg[$i]);      
                 }  
-                $Data = $SenderAddr . " " . $Amount . " " . $ReceiverAddr . " "  . $Nonce . " " . $HashFinalValue . " " . $Date . " @ " . $Time;           
-                $Data = (string)($Data);
-                fwrite($myfile, $Data."\n");
-                fclose($myfile); 
-                //WRITE AND OPEN FILE FOR HASHES
-                $FileToOpenHash = $stringFileName."Hash.txt";       
-                $myfileHash = fopen($FileToOpenHash, 'a') or die("Unable to open file!");
-                $HashFinalValue = $HashFinalValue;     
-                fwrite($myfileHash, $HashFinalValue."\n");
-                fclose($myfileHash);                
+                $DataToInsertIntoFile = GetInputData() . " " . $HashFinalValue . " " . $DateAndTime;           
+                writeToFileDataPlain($FileToOpen2, $DataToInsertIntoFile);
+                if(strlen($HashFinalValue)>=3){
+                    writeToFileDataPlain($FileToOpen2."Hash", $HashFinalValue);
+                }               
         }
         function writeToFileDataPlain($FileName, $Data){
             $myfile = fopen($FileName.".txt", 'a') or die("Unable to open file!");
-            fwrite($myfile, $Data."\n");
+            fwrite($myfile, $Data."\r\n");
             fclose($myfile);
         }
         function readfileToArray($fileName){
-            $lines=array();
+            $LinesFromFile=array();
             $myfileRead = fopen($fileName, "r") or die("Unable to open file!");            
             while(!feof($myfileRead)) {
-                $line = fgets($myfileRead, 4096); //READ
-                array_push($lines, $line); //ADD DATA TO ARRAY      
+                $LineFromFile = fgets($myfileRead, 4096);
+                array_push($LinesFromFile, $LineFromFile);    
                 }        
                 fclose($myfileRead);
-                return $lines;            
+                return $LinesFromFile;            
         }
 
         function printTransactions($ArrayName, $Name){
                 $counter = 1;    
-                $Block = 0;
-                $HashesArray = readfileToArray($Name."Hash.txt");
-                $grouped = array(); //NEED FOR GROUPING ARRAY ELEMENTS
-                array_pop($HashesArray);  
-                $HashAlg = "sha256";
-                foreach ($ArrayName as $line){                  
-                    echo "<font color='yellow'>Transaction " . $counter . "</font> " . $line."<br />";                         
-                    If ($counter % 2 == 0) {              
-                        //THIS IS WHERE THE ERROR IS OCCURING
-                        //SYMPTOMS ARE A SPACE WAS ADDED AT THE END CAUSING INCORRECT HASH           
-                        $Block = $Block + 1;
-                        $ModulousVal = $counter % 3;        
-                        if(isset($HashesArray[$counter -1])=="1" && isset($HashesArray[$counter -2])=="1" && gettype($HashesArray[$counter -1])!="NULL"){
-                            $HashValue = hash($HashAlg, $HashesArray[$counter -2].$HashesArray[$counter -1]);
-                        }      
-                        $TempCounter = $counter-1;
-                        $TempCounter2 = $counter;
-                        echo "<font size='3' color='red'>T".$TempCounter.":" . $HashesArray[$counter -2] . "</font> <br />";
-                        echo "<font size='3' color='red'>T".$TempCounter2.":" . $HashesArray[$counter -1] . "</font> <br />";
-                        if(isset($HashValue) == 0){
-                            $HashValue="";                              
-                        }  elseif(isset($HashesArray[$counter -1])=="1" && isset($HashesArray[$counter -2])=="1" && strlen($HashesArray[$counter -1])>=2 && strlen($HashesArray[$counter -2])>=2){
-                            writeToFileDataPlain("TESTING", $HashValue);
-                            echo "<font size='3' color='red'> Data Hashed " . $HashesArray[$counter -2].$HashesArray[$counter -1]."</font> <br /><br />";
-                        }else{
-                            $HashValue = "";
-                        }
-                        echo "<font size='3' color='red'> End of Block " . $Block . ": $HashValue</font> <br /><br />";                                 
+                $BlockNumber = 0;
+                $HashesFromFileArray = readfileToArray($Name."Hash.txt");
+                array_pop($HashesFromFileArray);  
+                foreach ($ArrayName as $line){     
+                    PrintoutToUser("yellow", "3", "Transaction " . $counter . " <font color='white'>" . $line . "</font>");                                     
+                    If ($counter % 2 == 0) {                        
+                        $BlockNumber = $BlockNumber + 1;                                
+                        if(isset($HashesFromFileArray[$counter -1])=="1" && isset($HashesFromFileArray[$counter -2])=="1" && gettype($HashesFromFileArray[$counter -1])!="NULL"){
+                            if(strlen($HashesFromFileArray[$counter -1])>=2 && strlen($HashesFromFileArray[$counter -2])>=2){
+
+                                $HashValue = GetNewHash($HashesFromFileArray[$counter -2].$HashesFromFileArray[$counter -1], "sha256");                             
+                                $TransactionInputCounter = $counter-1;
+                                $TransactionInputCounter2 = $counter;
+                                PrintoutToUser("green", "3", "T". $TransactionInputCounter.":" . $HashesFromFileArray[$counter -2]);
+                                PrintoutToUser("green", "3", "T". $TransactionInputCounter2.":" . $HashesFromFileArray[$counter -1]);  
+                                PrintoutToUser("blue", "3", "Data Hashed " . $HashesFromFileArray[$counter -2].$HashesFromFileArray[$counter -1]." Length of Array input 1 and 2 is " . strLen($HashesFromFileArray[$counter -2]) . " and " . strLen($HashesFromFileArray[$counter -2]));
+                                PrintoutToUser("red", "3", "End of Block: " .$BlockNumber . ":". $HashValue . "<br />");  
+                            }                        
+                        } 
+                        if(isset($HashValue)){
+                            writeToFileDataPlain("TESTING", $HashValue); 
+                            $HashValue = NULL; 
+                        }                                                                 
                     }            
                     $counter = $counter + 1;                     
                 } 
@@ -155,6 +126,11 @@
         function checkVariableNotEmpty($Var){
                 return (isset($Var) && strlen($Var) != 0);
             }
+        
+        //FUNCTION PRINT OUT DATA
+        function PrintoutToUser($FontColor, $FontSize, $DataToPrintOut){
+            echo "<font size='". $FontSize ."' color='". $FontColor ."'>" . $DataToPrintOut . "</font> <br />";
+        }
     ?>     
 <br><a href="index.html"><font color="red">Link Back Home</font></a>
    
