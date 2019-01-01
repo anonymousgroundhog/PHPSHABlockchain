@@ -52,8 +52,7 @@
             $Amount = htmlspecialchars($_POST['Amount']);
             $Nonce = htmlspecialchars($_POST['Nonce']);
             $SenderAddr = htmlspecialchars($_POST['SenderAddr']);
-            $ReceiverAddr = htmlspecialchars($_POST['ReceiverAddr']);
-            
+            $ReceiverAddr = htmlspecialchars($_POST['ReceiverAddr']);            
             $DataToReturn = $SenderAddr . " " . $Amount . " " . $ReceiverAddr . " "  . $Nonce;
 
             return $DataToReturn;
@@ -77,19 +76,19 @@
                     writeToFileDataPlain($FileToOpen2."Hash", $HashFinalValue);
                 }               
         }
-        function writeToFileDataPlain($FileName, $Data){
-            $myfile = fopen($FileName.".txt", 'a') or die("Unable to open file!");
-            fwrite($myfile, $Data."\r\n");
-            fclose($myfile);
+        function writeToFileDataPlain($FileNameToWriteTo, $Data){
+            $FileToWriteTo = fopen($FileNameToWriteTo.".txt", 'a') or die("Unable to open file!");
+            fwrite($FileToWriteTo, $Data."\r\n");
+            fclose($FileToWriteTo);
         }
         function readfileToArray($fileName){
             $LinesFromFile=array();
-            $myfileRead = fopen($fileName, "r") or die("Unable to open file!");            
-            while(!feof($myfileRead)) {
-                $LineFromFile = fgets($myfileRead, 4096);
+            $ReadFromFile = fopen($fileName, "r") or die("Unable to open file!");            
+            while(!feof($ReadFromFile)) {
+                $LineFromFile = fgets($ReadFromFile, 4096);
                 array_push($LinesFromFile, $LineFromFile);    
                 }        
-                fclose($myfileRead);
+                fclose($ReadFromFile);
                 return $LinesFromFile;            
         }
 
@@ -104,7 +103,6 @@
                         $BlockNumber = $BlockNumber + 1;                                
                         if(isset($HashesFromFileArray[$counter -1])=="1" && isset($HashesFromFileArray[$counter -2])=="1" && gettype($HashesFromFileArray[$counter -1])!="NULL"){
                             if(strlen($HashesFromFileArray[$counter -1])>=2 && strlen($HashesFromFileArray[$counter -2])>=2){
-
                                 $HashValue = GetNewHash($HashesFromFileArray[$counter -2].$HashesFromFileArray[$counter -1], "sha256");                             
                                 $TransactionInputCounter = $counter-1;
                                 $TransactionInputCounter2 = $counter;
@@ -126,8 +124,7 @@
         function checkVariableNotEmpty($Var){
                 return (isset($Var) && strlen($Var) != 0);
             }
-        
-        //FUNCTION PRINT OUT DATA
+
         function PrintoutToUser($FontColor, $FontSize, $DataToPrintOut){
             echo "<font size='". $FontSize ."' color='". $FontColor ."'>" . $DataToPrintOut . "</font> <br />";
         }
