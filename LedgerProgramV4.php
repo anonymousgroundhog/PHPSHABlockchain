@@ -99,7 +99,7 @@
                                 $TransactionInputCounter2 = $counter;
                                 PrintoutToUser("green", "3", "T". $TransactionInputCounter.":" . $HashesFromFileArray[$counter -2]);
                                 PrintoutToUser("green", "3", "T". $TransactionInputCounter2.":" . $HashesFromFileArray[$counter -1]);  
-                                PrintoutToUser("blue", "3", "Data Hashed " . $HashesFromFileArray[$counter -2].$HashesFromFileArray[$counter -1]." Length of Array input 1 and 2 is " . strLen($HashesFromFileArray[$counter -2]) . " and " . strLen($HashesFromFileArray[$counter -2]));
+                                PrintoutToUser("blue", "3", "Data Hashed " . $HashesFromFileArray[$counter -2].$HashesFromFileArray[$counter -1]." Length of Array input 1 and 2 is " . strLen($HashesFromFileArray[$counter -2]) . " and " . strLen($HashesFromFileArray[$counter -1]));
                                 PrintoutToUser("red", "3", "End of Block: " .$BlockNumber . ":". $HashValueOfBothTransactions . "<br />"); 
                                 writeToFileDataPlain("TESTING", $HashValueOfBothTransactions); 
                             }                        
