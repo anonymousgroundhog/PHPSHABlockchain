@@ -101,11 +101,14 @@
                 fwrite($myfileHash, $HashFinalValue."\n");
                 fclose($myfileHash);                
         }
-
+        function writeToFileDataPlain($FileName, $Data){
+            $myfile = fopen($FileName.".txt", 'a') or die("Unable to open file!");
+            fwrite($myfile, $Data."\n");
+            fclose($myfile);
+        }
         function readfileToArray($fileName){
             $lines=array();
-            $myfileRead = fopen($fileName, "r") or die("Unable to open file!");
-            
+            $myfileRead = fopen($fileName, "r") or die("Unable to open file!");            
             while(!feof($myfileRead)) {
                 $line = fgets($myfileRead, 4096); //READ
                 array_push($lines, $line); //ADD DATA TO ARRAY      
@@ -128,18 +131,22 @@
                         //SYMPTOMS ARE A SPACE WAS ADDED AT THE END CAUSING INCORRECT HASH           
                         $Block = $Block + 1;
                         $ModulousVal = $counter % 3;        
-                        if(isset($HashesArray[$counter -1])=="1" && isset($HashesArray[$counter -2])=="1" &&gettype($HashesArray[$counter -1])!="NULL"){
-                            $HashValue = hash($HashAlg, $HashesArray[$counter -1].$HashesArray[$counter -2]);
+                        if(isset($HashesArray[$counter -1])=="1" && isset($HashesArray[$counter -2])=="1" && gettype($HashesArray[$counter -1])!="NULL"){
+                            $HashValue = hash($HashAlg, $HashesArray[$counter -2].$HashesArray[$counter -1]);
                         }      
-                        echo "<font size='3' color='red'>T2: " . isset($HashesArray[$counter -1]) . "</font> <br />";
-                        echo "<font size='3' color='red'>T1: " . gettype($HashesArray[$counter -2]) . "</font> <br />";
+                        $TempCounter = $counter-1;
+                        $TempCounter2 = $counter;
+                        echo "<font size='3' color='red'>T".$TempCounter.":" . $HashesArray[$counter -2] . "</font> <br />";
+                        echo "<font size='3' color='red'>T".$TempCounter2.":" . $HashesArray[$counter -1] . "</font> <br />";
                         if(isset($HashValue) == 0){
-                            $HashValue="";
-                              
-                            echo "<font size='3' color='red'> Data Hashed " . $HashesArray[$counter -1].$HashesArray[$counter -2]."</font> <br /><br />";  
-                        }  
-                        echo "<font size='3' color='red'> End of Block " . $Block . ": $HashValue</font> <br /><br />";       
-                                                
+                            $HashValue="";                              
+                        }  elseif(isset($HashesArray[$counter -1])=="1" && isset($HashesArray[$counter -2])=="1" && strlen($HashesArray[$counter -1])>=2 && strlen($HashesArray[$counter -2])>=2){
+                            writeToFileDataPlain("TESTING", $HashValue);
+                            echo "<font size='3' color='red'> Data Hashed " . $HashesArray[$counter -2].$HashesArray[$counter -1]."</font> <br /><br />";
+                        }else{
+                            $HashValue = "";
+                        }
+                        echo "<font size='3' color='red'> End of Block " . $Block . ": $HashValue</font> <br /><br />";                                 
                     }            
                     $counter = $counter + 1;                     
                 } 

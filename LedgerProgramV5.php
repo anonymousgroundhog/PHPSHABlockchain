@@ -19,7 +19,7 @@
    </tr>
    </table>
    <br><br>   
-    <form id = "myForm" action="LedgerProgramV4.php" method="post">
+    <form id = "myForm" action="LedgerProgramV5.php" method="post">
     Blockchain File Name: <textarea id="FileName" name = "FileName" rows="1" cols="10" title="Enter in a File Name Here."><?php if(isset($_POST['FileName'])) { 
          echo htmlentities ($_POST['FileName']); }?></textarea><br>
      Sender: <textarea id="SenderAddr" name = "SenderAddr" rows="1" cols="10" title="Enter in sender Name."><?php if(isset($_POST['SenderAddr'])) { 
@@ -40,9 +40,9 @@
         $FileName = htmlspecialchars($_POST['FileName']);      
         $html = '<div id="Block"><h1>Blockchain Data: </h1></div><br />';    
         echo ($html);          
-        if (strLen(GetInputData())>=5){  
+        if (strLen(GetInputData())>=8){  
             WriteToFile($FileName);
-            $FileLinesArray=readfileToArray($FileName.".txt"); 
+            $FileLinesArray=ReadFileToArray($FileName.".txt"); 
             printTransactions($FileLinesArray, $FileName);           
         } 
 
@@ -63,17 +63,17 @@
                 $DateAndTime = date("Y/m/d"). "@" . date("h:i:sa");
                 $HashFinalValue = GetNewHash(GetInputData(), "sha256"); 
                 $DataToInsertIntoFile = GetInputData() . " " . $HashFinalValue . " " . $DateAndTime;           
-                writeToFileDataPlain($FileToOpen2, $DataToInsertIntoFile);
+                WriteToFileData($FileToOpen2, $DataToInsertIntoFile);
                 if(strlen($HashFinalValue)>=3){
-                    writeToFileDataPlain($FileToOpen2."Hash", $HashFinalValue);
+                    WriteToFileData($FileToOpen2."Hash", $HashFinalValue);
                 }               
         }
-        function writeToFileDataPlain($FileNameToWriteTo, $Data){
+        function WriteToFileData($FileNameToWriteTo, $Data){
             $FileToWriteTo = fopen($FileNameToWriteTo.".txt", 'a') or die("Unable to open file!");
             fwrite($FileToWriteTo, $Data."\r\n");
             fclose($FileToWriteTo);
         }
-        function readfileToArray($fileName){
+        function ReadFileToArray($fileName){
             $LinesFromFile=array();
             $ReadFromFile = fopen($fileName, "r") or die("Unable to open file!");            
             while(!feof($ReadFromFile)) {
@@ -83,36 +83,6 @@
                 fclose($ReadFromFile);
                 return $LinesFromFile;            
         }
-        function printTransactions($ArrayName, $Name){
-                $counter = 1;    
-                $BlockNumber = 0;
-                $HashesFromFileArray = readfileToArray($Name."Hash.txt");
-                array_pop($HashesFromFileArray);  
-                foreach ($ArrayName as $LineFromFile){     
-                    PrintoutToUser("yellow", "3", "Transaction " . $counter . " <font color='white'>" . $LineFromFile . "</font>");                                     
-                    If ($counter % 2 == 0) {                        
-                        $BlockNumber = $BlockNumber + 1;                                
-                        if(isset($HashesFromFileArray[$counter -1])=="1" && isset($HashesFromFileArray[$counter -2])=="1" && gettype($HashesFromFileArray[$counter -1])!="NULL"){
-                            if(strlen($HashesFromFileArray[$counter -1])>=66 && strlen($HashesFromFileArray[$counter -2])>=66){
-                                $DataToHashNow = Get2ItemsFromFile($Name."Hash", $counter-2);
-                                writeToFileDataPlain("DataBeingHashed", $DataToHashNow);
-                                $HashValueOfBothTransactions = GetNewHash($DataToHashNow, "sha256");                             
-                                $TransactionInputCounter = $counter-1;
-                                $TransactionInputCounter2 = $counter;
-                                PrintoutToUser("green", "3", "T". $TransactionInputCounter.":" . $HashesFromFileArray[$counter -2]);
-                                PrintoutToUser("green", "3", "T". $TransactionInputCounter2.":" . $HashesFromFileArray[$counter -1]);  
-                                //PrintoutToUser("yellow", "3", "Data Hashed: " . $DataToHashNow);
-                                PrintoutToUser("red", "3", "End of Block " .$BlockNumber . ":". $HashValueOfBothTransactions . "<br />"); 
-                                writeToFileDataPlain("TESTING", $HashValueOfBothTransactions); 
-                            }                        
-                        }                                                                 
-                    }             
-                    $counter = $counter + 1;                     
-                } 
-            }
-        function checkVariableNotEmpty($Var){
-                return (isset($Var) && strlen($Var) != 0);
-            }
         function PrintoutToUser($FontColor, $FontSize, $DataToPrintOut){
             echo "<font size='". $FontSize ."' color='". $FontColor ."'>" . $DataToPrintOut . "</font> <br />";
         }
@@ -121,6 +91,29 @@
             $first2 = array_slice($LinesToGet, $OffSet, 2);
             return implode("", $first2);
         }
+        function printTransactions($ArrayName, $FileName){
+                $counter = 1;    
+                $BlockNumber = 0;
+                $HashesFromFileArray = ReadFileToArray($FileName."Hash.txt");
+                array_pop($HashesFromFileArray);  
+                foreach ($ArrayName as $LineFromFile){     
+                    PrintoutToUser("yellow", "3", "Transaction " . $counter . " <font color='white'>" . $LineFromFile . "</font>");                                     
+                    If ($counter % 2 == 0) {                        
+                        $BlockNumber = $BlockNumber + 1;                                
+                        if(isset($HashesFromFileArray[$counter -1])=="1" && isset($HashesFromFileArray[$counter -2])=="1" && gettype($HashesFromFileArray[$counter -1])!="NULL"){
+                            if(strlen($HashesFromFileArray[$counter -1])>=66 && strlen($HashesFromFileArray[$counter -2])>=66){
+                                $DataToHashNow = Get2ItemsFromFile($FileName."Hash", $counter-2);
+                                WriteToFileData("DataBeingHashed", $DataToHashNow);
+                                $HashValueOfBothTransactions = GetNewHash($DataToHashNow, "sha256");                             
+                                $TransactionInputCounter = $counter-1;
+                                $TransactionInputCounter2 = $counter; 
+                                PrintoutToUser("green", "3", "End of Block " .$BlockNumber . ": ". $HashValueOfBothTransactions . "<br />"); 
+                            }                        
+                        }                                                                 
+                    }             
+                    $counter = $counter + 1;                     
+                } 
+            }
     ?>     
 <br><a href="index.html"><font color="red">Link Back Home</font></a>
    
