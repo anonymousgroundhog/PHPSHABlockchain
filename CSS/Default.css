@@ -10,11 +10,10 @@ body{
     font-family: "Raleway", sans-serif;
     font-size: 20px;
     background-color: black; 
-    
 }
 div {
-    height: 200px;
-    width: 70%;
+    /* height: 200px; */
+    width: 50%;
     
     
 }
@@ -30,3 +29,138 @@ hr{
     width: 100%;
     background-color: black;  
 }
+
+#Block{
+    background-color: blue;
+   font-size: 10 px;
+   background-size: 100%;
+   display: table;
+}
+
+#panel {
+    padding: 5px;
+    display: none;
+    background-color: black;
+}
+
+#flip {
+    padding: 2px;
+    text-align: center;
+    background-color: white;
+    border: solid 1px #c3c3c3;
+    color: black;
+    width: 20 px;
+}
+
+#flip{
+    height: 20px;
+    
+}
+
+#panel2 {
+    padding: 5px;
+    display: none;
+    background-color: black;
+}
+
+#flip2 {
+    padding: 2px;
+    text-align: center;
+    background-color: white;
+    border: solid 1px #c3c3c3;
+    color: black;
+}
+
+#flip2{
+    height: 20px;
+    
+}
+
+
+#panel3 {
+    padding: 5px;
+    display: none;
+    background-color: black;
+}
+
+#flip3 {
+    padding: 2px;
+    text-align: center;
+    background-color: white;
+    border: solid 1px #c3c3c3;
+    color: black;
+}
+
+#flip3{
+    height: 20px;
+    
+}
+
+
+#panel4 {
+    padding: 5px;
+    display: none;
+    background-color: black;
+}
+
+
+#flip4 {
+    padding: 2px;
+    text-align: center;
+    background-color: white;
+    border: solid 1px #c3c3c3;
+    color: black;
+}
+
+#flip4{
+    height: 20px;
+    
+}
+#panel5 {
+    padding: 5px;
+    display: none;
+    background-color: black;
+}
+
+#flip5 {
+    padding: 2px;
+    text-align: center;
+    background-color: white;
+    border: solid 1px #c3c3c3;
+    color: black;
+    width: 20 px;
+}
+
+#panel6 {
+    padding: 5px;
+    display: none;
+    background-color: black;
+}
+
+#flip6 {
+    padding: 2px;
+    text-align: left;
+    background-color: white;
+    border: solid 1px #c3c3c3;
+    color: black;
+    width: 20 px;
+}
+
+div.flip{
+    width: 10px;
+}
+#BlockData{ 
+    border: 1px solid;
+    border-color: rgb(32, 3, 138);
+    text-align: left;
+    padding:10px;
+    box-shadow: 2px 10px rgb(32, 3, 138);  
+    width: 32%;
+       
+}
+/* #BlockDataAll{ 
+    border: 1px solid;
+    border-color: rgb(3, 118, 138);
+    padding: 10px;
+       
+} */
